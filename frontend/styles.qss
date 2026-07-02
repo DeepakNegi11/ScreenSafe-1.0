@@ -1,0 +1,86 @@
+/* Global Warm Theme */
+QMainWindow, QWidget {
+    background-color: #FAF6F0; /* Warm cream off-white */
+    color: #4A4441; /* Dark warm gray for text */
+    font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+/* Sidebar Styling */
+#sidebar {
+    background-color: #F0EAD6; /* Slightly darker warm tone to separate sidebar */
+    border-right: 1px solid #E3D9C6;
+}
+
+.nav-btn {
+    background-color: transparent;
+    color: #5C544F;
+    text-align: left;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    margin: 4px 15px;
+}
+
+.nav-btn:hover {
+    background-color: #E8DFCD; /* Soft hover effect */
+}
+
+.nav-btn:checked {
+    background-color: #D48C70; /* Warm terracotta/peach for active tab */
+    color: #FFFFFF;
+}
+
+/* Typography */
+.h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #332F2C;
+}
+
+.h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #4A4441;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #7A726D;
+    margin-bottom: 10px;
+}
+
+/* Dashboard Cards */
+.card {
+    background-color: #FFFFFF;
+    border: 1px solid #EAE3D5;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+/* Logs Console */
+QListWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #EAE3D5;
+    border-radius: 8px;
+    padding: 10px;
+    color: #5C544F;
+}
+
+/* Settings Checkboxes */
+QCheckBox {
+    font-size: 14px;
+    color: #4A4441;
+}
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #C4B9A9;
+    background-color: #FFFFFF;
+}
+QCheckBox::indicator:checked {
+    background-color: #D48C70;
+    border: 2px solid #D48C70;
+}
