@@ -5,7 +5,7 @@ import threading
 import time
 import re
 import pyautogui
-from ocr_engine import extract_with_boxes
+from backend.ocr_engine import extract_with_boxes
 
 # ── Trigger words ─────────────────────────────────────────────────
 TRIGGER_WORDS = {
@@ -213,6 +213,7 @@ def _looks_like_phone(word):
 
 # ── Main masking logic ────────────────────────────────────────────
 
+
 class _ScanState:
     """Tracks state across tokens during a single scan pass."""
     def __init__(self):
@@ -222,17 +223,7 @@ class _ScanState:
 
 
 def _process_token(word, state):
-    """
-    Process a single OCR token.
-    Returns (should_mask, updated_state).
-
-    Key improvements:
-    1. Skips filler words between trigger and value
-    2. Finds actual value token after fillers
-    3. Handles "otp is 234322" correctly
-    4. Handles "password: dsa123@" correctly
-    5. Handles "your otp is: 482910" correctly
-    """
+  
     if not word:
         return False, state
 
@@ -430,7 +421,7 @@ def _redraw_all():
     for (x, y, x2, y2) in _confirmed_regions:
         _canvas.create_rectangle(
             x, y, x2, y2,
-            fill="black",
+            fill="black", 
             outline="black"
         )
     print(f"[Masking] {len(_confirmed_regions)} box(es) on screen")
@@ -492,12 +483,30 @@ def _check_outside_confirmed(screenshot):
         print(f"[Verify] outside check error: {e}")
     return not found_outside
 
+# Add this global flag to control the verify loop
+_is_paused = False
+
+def set_overlay_paused(paused):
+    global _is_paused
+    _is_paused = paused
+    if paused:
+        # Instantly wipe the screen clean when paused
+        try:
+            _root.after(0, _clear_all)
+        except Exception:
+            pass
+
 
 def _verify_loop():
     global _clean_count, _verify_running
     _verify_running = True
     print("[Verify] Loop started")
     while _verify_running:
+        # 🛑 THE FIX: If paused, just sleep and skip the mask checking!
+        if _is_paused:
+            time.sleep(1)
+            continue
+            
         try:
             screenshot  = pyautogui.screenshot()
             new_regions = compute_regions(screenshot)
@@ -517,8 +526,8 @@ def _verify_loop():
                 _clean_count = 0
         except Exception as e:
             print(f"[Verify] Error: {e}")
+            
         time.sleep(2)
-
 
 # ── Window ────────────────────────────────────────────────────────
 
