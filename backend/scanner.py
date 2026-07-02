@@ -2,11 +2,12 @@
 
 import time
 import threading
-from process_monitor import is_screen_being_recorded
-from ocr_engine import extract_text_from_screen
-from sensitive_detector import detect_sensitive_data
-from masking_overlay import apply_mask_overlay
-from config import SCAN_INTERVAL, FORCE_SCAN
+from backend.process_monitor import is_screen_being_recorded
+from backend.ocr_engine import extract_text_from_screen
+from backend.sensitive_detector import detect_sensitive_data
+from backend.masking_overlay import apply_mask_overlay
+from backend.config import SCAN_INTERVAL, FORCE_SCAN
+from backend.masking_overlay import set_overlay_paused
 
 scan_state = {
     "recording_status": {"recording": False, "detected_app": None},
@@ -59,18 +60,20 @@ def run_scan_loop():
 
         time.sleep(SCAN_INTERVAL)
 
+    try:
+     apply_mask_overlay(False, screenshot=None)
+    except Exception:
+     pass
 
 def start_scanner():
     _stop_event.clear()
+    set_overlay_paused(False)  # <--- Unpause the ghost mask loop
     threading.Thread(target=run_scan_loop, daemon=True).start()
     print("[ScreenSafe] Scanner started.")
-    print(f"[ScreenSafe] FORCE_SCAN    = {FORCE_SCAN}")
-    print(f"[ScreenSafe] SCAN_INTERVAL = {SCAN_INTERVAL}s")
-
 
 def stop_scanner():
     _stop_event.set()
-
+    set_overlay_paused(True)   # <--- Pause the ghost mask loop and wipe screen
 
 def get_state():
     with _lock:
